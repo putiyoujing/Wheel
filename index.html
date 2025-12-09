@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幸运转盘 - 创建你的专属转盘游戏</title>
+    <style>
+        :root {
+            /* 默认主题 - 简约白 */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent: #007bff;
+            --border: #e0e0e0;
+            --shadow: rgba(0, 0, 0, 0.1);
+
+            /* 转盘色板 */
+            --color-1: #FF6B6B;
+            --color-2: #4ECDC4;
+            --color-3: #45B7D1;
+            --color-4: #FFA07A;
+            --color-5: #98D8C8;
+            --color-6: #FFD700;
+            --color-7: #DDA0DD;
+            --color-8: #F0E68C;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent: #4a9eff;
+            --border: #404040;
+            --shadow: rgba(0, 0, 0, 0.3);
+
+            /* 暗黑主题配色 - 深色调和色系 */
+            --color-1: #B71C1C;
+            --color-2: #4A148C;
+            --color-3: #1A237E;
+            --color-4: #004D40;
+            --color-5: #E65100;
+            --color-6: #6A1B9A;
+            --color-7: #00695C;
+            --color-8: #AD1457;
+        }
+
+        [data-theme="cyberpunk"] {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a0033;
+            --text-primary: #00ffff;
+            --text-secondary: #ff00ff;
+            --accent: #00ff00;
+            --border: #ff00ff;
+            --shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+
+            /* 霓虹赛博配色 - 高对比度荧光色 */
+            --color-1: #FF00FF;
+            --color-2: #00FFFF;
+            --color-3: #FFFF00;
+            --color-4: #FF1493;
+            --color-5: #00FF00;
+            --color-6: #FF4500;
+            --color-7: #8A2BE2;
+            --color-8: #00CED1;
+        }
+
+        [data-theme="forest"] {
+            --bg-primary: #f0f8f0;
+            --bg-secondary: #e8f5e8;
+            --text-primary: #2d5016;
+            --text-secondary: #4a7c2e;
+            --accent: #228b22;
+            --border: #8fbc8f;
+            --shadow: rgba(34, 139, 34, 0.1);
+
+            /* 森林自然配色 - 深浅绿色系 */
+            --color-1: #2E7D32;
+            --color-2: #66BB6A;
+            --color-3: #81C784;
+            --color-4: #4CAF50;
+            --color-5: #8BC34A;
+            --color-6: #689F38;
+            --color-7: #558B2F;
+            --color-8: #33691E;
+        }
+
+        [data-theme="ocean"] {
+            --bg-primary: #f0f8ff;
+            --bg-secondary: #e6f3ff;
+            --text-primary: #003366;
+            --text-secondary: #0066cc;
+            --accent: #0080ff;
+            --border: #87ceeb;
+            --shadow: rgba(0, 128, 255, 0.1);
+
+            /* 海洋深浅配色 - 蓝色系渐变 */
+            --color-1: #0277BD;
+            --color-2: #0288D1;
+            --color-3: #039BE5;
+            --color-4: #29B6F6;
+            --color-5: #4FC3F7;
+            --color-6: #81D4FA;
+            --color-7: #B3E5FC;
+            --color-8: #E1F5FE;
+        }
+
+        [data-theme="sunset"] {
+            --bg-primary: #fff5f0;
+            --bg-secondary: #ffe8dc;
+            --text-primary: #8b2500;
+            --text-secondary: #ff4500;
+            --accent: #ff6347;
+            --border: #ffa500;
+            --shadow: rgba(255, 69, 0, 0.1);
+
+            /* 日落暖色配色 - 橙红色系 */
+            --color-1: #D84315;
+            --color-2: #E64A19;
+            --color-3: #F4511E;
+            --color-4: #FF5722;
+            --color-5: #FF6E40;
+            --color-6: #FF8A65;
+            --color-7: #FFAB91;
+            --color-8: #FFCCBC;
+        }
+
+        [data-theme="candy"] {
+            --bg-primary: #fff0f5;
+            --bg-secondary: #ffe0f0;
+            --text-primary: #8b008b;
+            --text-secondary: #ff69b4;
+            --accent: #ff1493;
+            --border: #ffb6c1;
+            --shadow: rgba(255, 20, 147, 0.1);
+
+            /* 糖果甜美配色 - 粉紫色系 */
+            --color-1: #C2185B;
+            --color-2: #D81B60;
+            --color-3: #E91E63;
+            --color-4: #F06292;
+            --color-5: #F48FB1;
+            --color-6: #F8BBD0;
+            --color-7: #FCE4EC;
+            --color-8: #E1BEE7;
+        }
+
+        [data-theme="midnight"] {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a3e;
+            --text-primary: #ccd6f6;
+            --text-secondary: #8892b0;
+            --accent: #64ffda;
+            --border: #233554;
+            --shadow: 0 0 40px rgba(100, 255, 218, 0.3);
+
+            /* 午夜深邃配色 - 深蓝紫色系 */
+            --color-1: #1A237E;
+            --color-2: #283593;
+            --color-3: #303F9F;
+            --color-4: #3949AB;
+            --color-5: #5C6BC0;
+            --color-6: #7986CB;
+            --color-7: #9FA8DA;
+            --color-8: #C5CAE9;
+        }
+
+        [data-theme="neon"] {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #151931;
+            --text-primary: #ffffff;
+            --text-secondary: #a8a8a8;
+            --accent: #00ff88;
+            --border: #ff0080;
+            --shadow: 0 0 50px rgba(0, 255, 136, 0.5);
+
+            /* 霓虹灯光配色 - 明亮霓虹色 */
+            --color-1: #FF006E;
+            --color-2: #FB5607;
+            --color-3: #FFBE0B;
+            --color-4: #8338EC;
+            --color-5: #3A86FF;
+            --color-6: #06FFB4;
+            --color-7: #FF4365;
+            --color-8: #00D9FF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--accent), var(--text-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+
+        /* 生成器界面 */
+        .generator-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .config-panel, .preview-panel {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .config-panel:hover, .preview-panel:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
+        }
+
+        .options-list {
+            margin-bottom: 20px;
+        }
+
+        .option-item {
+            display: grid;
+            grid-template-columns: 1fr 100px 40px;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            border: 2px solid var(--border);
+        }
+
+        .option-item input {
+            padding: 8px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(var(--accent-rgb), 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--text-secondary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ff4444;
+            color: white;
+        }
+
+        .btn-success {
+            background: #00c851;
+            color: white;
+            font-size: 20px;
+            padding: 15px 40px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            border-radius: 50%;
+            padding: 10px;
+            background: var(--bg-secondary);
+            box-shadow: 0 0 30px var(--shadow), inset 0 0 20px rgba(0,0,0,0.1);
+            border: 3px solid var(--accent);
+        }
+
+        #wheelCanvas,
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 45px solid var(--accent);
+            filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
+            z-index: 10;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .theme-option {
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: var(--bg-primary);
+        }
+
+        .theme-option:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .theme-option.active {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+        }
+
+        /* 游戏界面 */
+        .game-section {
+            display: none;
+            text-align: center;
+        }
+
+        .game-header {
+            margin-bottom: 30px;
+        }
+
+        .game-title {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .spin-button {
+            font-size: 24px;
+            padding: 20px 60px;
+            margin-top: 30px;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-primary);
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .modal-result {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+
+        .confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .warning {
+            color: #ff4444;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .generator-section {
+                grid-template-columns: 1fr;
+            }
+
+            .wheel-container {
+                width: 300px;
+                height: 300px;
+            }
+
+            .theme-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body data-theme="default">
+    <div class="container">
+        <!-- 生成器界面 -->
+        <div class="generator-section" id="generatorSection">
+            <div class="config-panel">
+                <h2>创建转盘</h2>
+
+                <div class="form-group">
+                    <label for="wheelTitle">转盘标题</label>
+                    <input type="text" id="wheelTitle" placeholder="给你的转盘起个名字" value="幸运转盘">
+                </div>
+
+                <div class="form-group">
+                    <label>选择主题</label>
+                    <div class="theme-selector">
+                        <div class="theme-option active" data-theme="default">简约白</div>
+                        <div class="theme-option" data-theme="dark">暗黑</div>
+                        <div class="theme-option" data-theme="cyberpunk">赛博朋克</div>
+                        <div class="theme-option" data-theme="forest">森林</div>
+                        <div class="theme-option" data-theme="ocean">海洋</div>
+                        <div class="theme-option" data-theme="sunset">夕阳</div>
+                        <div class="theme-option" data-theme="candy">糖果</div>
+                        <div class="theme-option" data-theme="midnight">午夜</div>
+                        <div class="theme-option" data-theme="neon">霓虹</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>转盘选项</label>
+                    <div class="options-list" id="optionsList">
+                        <div class="option-item">
+                            <input type="text" placeholder="选项内容" value="选项1">
+                            <input type="number" placeholder="占比%" value="50" min="0" max="100">
+                            <button class="btn btn-danger" onclick="removeOption(this)">×</button>
+                        </div>
+                        <div class="option-item">
+                            <input type="text" placeholder="选项内容" value="选项2">
+                            <input type="number" placeholder="占比%" value="50" min="0" max="100">
+                            <button class="btn btn-danger" onclick="removeOption(this)">×</button>
+                        </div>
+                    </div>
+                    <div id="totalPercentage" class="warning"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="addOption()">+ 添加选项</button>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="generateWheel()">生成转盘</button>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <h2>预览</h2>
+                <div class="wheel-container">
+                    <div class="wheel-pointer"></div>
+                    <canvas id="wheelCanvas" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏界面 -->
+        <div class="game-section" id="gameSection">
+            <div class="game-header">
+                <h1 class="game-title" id="gameTitle">幸运转盘</h1>
+            </div>
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <canvas id="gameCanvas" width="400" height="400"></canvas>
+            </div>
+            <button class="btn btn-primary spin-button" onclick="startSpin()">开始转盘</button>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="backToGenerator()">返回编辑</button>
+                <button class="btn btn-success" onclick="exportGame()">导出游戏</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结果模态框 -->
+    <div class="modal" id="resultModal">
+        <div class="modal-content">
+            <h2 class="modal-title">🎉 恭喜！</h2>
+            <div class="modal-result" id="modalResult"></div>
+            <button class="btn btn-primary" onclick="closeModal()">再转一次</button>
+        </div>
+    </div>
+
+    <!-- 撒花画布 -->
+    <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+    <script>
+        // 全局变量
+        let wheelConfig = null;
+        let currentTheme = 'default';
+        let isSpinning = false;
+        let confettiParticles = [];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePreview();
+
+            // 绑定主题选择器
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    currentTheme = this.dataset.theme;
+                    document.body.setAttribute('data-theme', currentTheme);
+                    updatePreview();
+                });
+            });
+
+            // 绑定输入变化事件
+            document.getElementById('wheelTitle').addEventListener('input', updatePreview);
+            document.getElementById('optionsList').addEventListener('input', updatePreview);
+        });
+
+        // 添加选项
+        function addOption() {
+            const optionsList = document.getElementById('optionsList');
+            const optionItem = document.createElement('div');
+            optionItem.className = 'option-item';
+            optionItem.innerHTML = `
+                <input type="text" placeholder="选项内容" value="新选项">
+                <input type="number" placeholder="占比%" value="0" min="0" max="100">
+                <button class="btn btn-danger" onclick="removeOption(this)">×</button>
+            `;
+            optionsList.appendChild(optionItem);
+            updatePreview();
+        }
+
+        // 移除选项
+        function removeOption(button) {
+            const optionItem = button.parentElement;
+            optionItem.remove();
+            updatePreview();
+        }
+
+        // 检查总占比
+        function checkTotalPercentage() {
+            const optionItems = document.querySelectorAll('.option-item');
+            let total = 0;
+
+            optionItems.forEach(item => {
+                const percentageInput = item.querySelector('input[type="number"]');
+                total += parseInt(percentageInput.value) || 0;
+            });
+
+            const warningDiv = document.getElementById('totalPercentage');
+            if (total === 100) {
+                warningDiv.textContent = '✓ 总占比为 100%';
+                warningDiv.style.color = '#00c851';
+            } else {
+                warningDiv.textContent = `⚠️ 总占比为 ${total}%，需要调整为 100%`;
+                warningDiv.style.color = '#ff4444';
+            }
+
+            return total === 100;
+        }
+
+        // 收集配置数据
+        function collectConfig() {
+            const title = document.getElementById('wheelTitle').value;
+            const options = [];
+            const optionItems = document.querySelectorAll('.option-item');
+
+            optionItems.forEach((item, index) => {
+                const text = item.querySelector('input[type="text"]').value;
+                const percentage = parseInt(item.querySelector('input[type="number"]').value) || 0;
+
+                if (text && percentage > 0) {
+                    const color = getComputedStyle(document.documentElement)
+                        .getPropertyValue(`--color-${(index % 8) + 1}`);
+                    options.push({ text, percentage, color });
+                }
+            });
+
+            return {
+                title,
+                themeId: currentTheme,
+                totalChance: options.reduce((sum, opt) => sum + opt.percentage, 0),
+                sectors: options
+            };
+        }
+
+        // 更新预览
+        function updatePreview() {
+            checkTotalPercentage();
+            const config = collectConfig();
+            drawWheel('wheelCanvas', config);
+        }
+
+        // 绘制转盘
+        function drawWheel(canvasId, config) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) - 10;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (config.sectors.length === 0) {
+                ctx.fillStyle = getComputedStyle(document.documentElement)
+                    .getPropertyValue('--text-secondary');
+                ctx.font = '20px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('请添加选项', centerX, centerY);
+                return;
+            }
+
+            let currentAngle = -Math.PI / 2;
+
+            config.sectors.forEach((sector, index) => {
+                const sliceAngle = (sector.percentage / 100) * 2 * Math.PI;
+
+                // 绘制扇形
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+                ctx.lineTo(centerX, centerY);
+                ctx.fillStyle = sector.color;
+                ctx.fill();
+
+                // 绘制边框
+                ctx.strokeStyle = getComputedStyle(document.documentElement)
+                    .getPropertyValue('--bg-primary');
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // 绘制文字
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(currentAngle + sliceAngle / 2);
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 16px Arial';
+                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                ctx.shadowBlur = 3;
+                ctx.fillText(sector.text, radius * 0.65, 5);
+                ctx.restore();
+
+                currentAngle += sliceAngle;
+            });
+
+            // 绘制中心圆
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
+            ctx.fillStyle = getComputedStyle(document.documentElement)
+                .getPropertyValue('--bg-primary');
+            ctx.fill();
+            ctx.strokeStyle = getComputedStyle(document.documentElement)
+                .getPropertyValue('--accent');
+            ctx.lineWidth = 4;
+            ctx.stroke();
+        }
+
+        // 生成转盘
+        function generateWheel() {
+            if (!checkTotalPercentage()) {
+                alert('请确保所有选项的占比总和为 100%！');
+                return;
+            }
+
+            wheelConfig = collectConfig();
+
+            // 切换到游戏界面
+            document.getElementById('generatorSection').style.display = 'none';
+            document.getElementById('gameSection').style.display = 'block';
+            document.getElementById('gameTitle').textContent = wheelConfig.title;
+
+            drawWheel('gameCanvas', wheelConfig);
+        }
+
+        // 返回生成器
+        function backToGenerator() {
+            document.getElementById('gameSection').style.display = 'none';
+            document.getElementById('generatorSection').style.display = 'grid';
+        }
+
+        // 开始转动
+        function startSpin() {
+            if (isSpinning || !wheelConfig) return;
+
+            isSpinning = true;
+            const canvas = document.getElementById('gameCanvas');
+            const wheelContainer = canvas.parentElement;
+            const spinButton = document.querySelector('.spin-button');
+            spinButton.disabled = true;
+
+            // 添加旋转时的发光效果
+            if (currentTheme === 'cyberpunk' || currentTheme === 'neon' || currentTheme === 'midnight') {
+                wheelContainer.style.boxShadow = '0 0 60px var(--shadow), 0 0 100px var(--accent)';
+            }
+
+            // 计算结果
+            const result = getRandomResult(wheelConfig);
+
+            // 播放音效（这里使用 Web Audio API 生成简单的音效）
+            playSpinSound();
+
+            // 动画参数
+            const duration = 4000; // 4秒
+            const startTime = Date.now();
+            const targetRotation = 360 * 5 + result.angle; // 转5圈 + 目标角度
+
+            animateSpin(canvas, startTime, duration, targetRotation, () => {
+                isSpinning = false;
+                spinButton.disabled = false;
+
+                // 恢复正常的阴影效果
+                wheelContainer.style.boxShadow = '';
+
+                showResult(result.sector);
+                playWinSound();
+                startConfetti();
+            });
+        }
+
+        // 获取随机结果
+        function getRandomResult(config) {
+            const random = Math.random() * 100;
+            let cumulative = 0;
+
+            for (let i = 0; i < config.sectors.length; i++) {
+                cumulative += config.sectors[i].percentage;
+                if (random <= cumulative) {
+                    // 计算这个扇区在转盘上的角度范围
+                    let startAngle = 0;
+                    for (let j = 0; j < i; j++) {
+                        startAngle += (config.sectors[j].percentage / 100) * 360;
+                    }
+                    const sectorAngle = (config.sectors[i].percentage / 100) * 360;
+                    const randomAngleInSector = Math.random() * sectorAngle;
+
+                    return {
+                        sector: config.sectors[i],
+                        angle: 360 - (startAngle + randomAngleInSector) // 旋转角度需要反向
+                    };
+                }
+            }
+
+            return {
+                sector: config.sectors[0],
+                angle: 0
+            };
+        }
+
+        // 转动动画
+        function animateSpin(canvas, startTime, duration, targetRotation, callback) {
+            const currentTime = Date.now();
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // 缓动函数
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            const currentRotation = targetRotation * easeOut;
+
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            if (progress < 1) {
+                requestAnimationFrame(() => animateSpin(canvas, startTime, duration, targetRotation, callback));
+            } else {
+                callback();
+            }
+        }
+
+        // 显示结果
+        function showResult(sector) {
+            document.getElementById('modalResult').textContent = `转到了：${sector.text}`;
+            document.getElementById('resultModal').style.display = 'block';
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+
+        // 撒花效果
+        function startConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            confettiParticles = [];
+            for (let i = 0; i < 150; i++) {
+                confettiParticles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    vx: Math.random() * 6 - 3,
+                    vy: Math.random() * 3 + 2,
+                    size: Math.random() * 4 + 2,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                });
+            }
+
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            const ctx = canvas.getContext('2d');
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            confettiParticles = confettiParticles.filter(particle => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.vy += 0.1; // 重力
+
+                if (particle.y > canvas.height) return false;
+
+                ctx.fillStyle = particle.color;
+                ctx.fillRect(particle.x, particle.y, particle.size, particle.size);
+
+                return true;
+            });
+
+            if (confettiParticles.length > 0) {
+                requestAnimationFrame(animateConfetti);
+            }
+        }
+
+        // 简单的音效生成
+        function playSpinSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        function playWinSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C, E, G, C
+
+            notes.forEach((frequency, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                }, index * 100);
+            });
+        }
+
+        // 导出游戏
+        function exportGame() {
+            if (!wheelConfig) {
+                alert('请先生成转盘！');
+                return;
+            }
+
+            // 获取当前页面的 HTML
+            const htmlContent = document.documentElement.outerHTML;
+
+            // 创建导出版本的 HTML
+            const exportHtml = htmlContent
+                // 注入配置数据
+                .replace(
+                    '// CONFIG_DATA_PLACEHOLDER',
+                    `const gameData = ${JSON.stringify(wheelConfig)};`
+                )
+                // 修改初始显示状态
+                .replace(
+                    '<div class="generator-section" id="generatorSection">',
+                    '<div class="generator-section" id="generatorSection" style="display: none;">'
+                )
+                .replace(
+                    '<div class="game-section" id="gameSection">',
+                    '<div class="game-section" id="gameSection" style="display: block;">'
+                )
+                // 在 script 标签开始后添加初始化代码
+                .replace(
+                    '<script>',
+                    `<script>
+const gameData = ${JSON.stringify(wheelConfig)};
+if (gameData) {
+    wheelConfig = gameData;
+    currentTheme = gameData.themeId;
+    document.body.setAttribute('data-theme', currentTheme);
+    document.getElementById('generatorSection').style.display = 'none';
+    document.getElementById('gameSection').style.display = 'block';
+    document.getElementById('gameTitle').textContent = wheelConfig.title;
+    drawWheel('gameCanvas', wheelConfig);
+}
+`
+                );
+
+            // 创建并下载文件
+            const blob = new Blob([exportHtml], { type: 'text/html;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${wheelConfig.title}.html`;
+            link.click();
+        }
+    </script>
+</body>
+</html>
